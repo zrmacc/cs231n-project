@@ -73,7 +73,12 @@ def prepare_image(img: np.ndarray, d=1) -> np.ndarray:
 
 
 # Prepare images.
-def prepare_images(blocks: np.ndarray, out_dir: str, out_prefix: str) -> None:
+def prepare_images(
+        blocks: np.ndarray,
+        out_dir: str,
+        out_prefix: str,
+        out_offset=0
+    ) -> None:
     """Prepare all images.
 
     Loops over batch axis of input tensor, preparing and saving each image.
@@ -83,7 +88,7 @@ def prepare_images(blocks: np.ndarray, out_dir: str, out_prefix: str) -> None:
     for i in range(n):
 
         # Check if export already exists.
-        out_file = os.path.join(out_dir, f"{out_prefix}_{i}.npy")
+        out_file = os.path.join(out_dir, f"{out_prefix}_{out_offset+i}.npy")
         if os.path.exists(out_file):
             continue
 
@@ -99,12 +104,29 @@ def prepare_images(blocks: np.ndarray, out_dir: str, out_prefix: str) -> None:
 
 # -----------------------------------------------------------------------------
 
-# Load examples.
-pos = np.load("col_pos_blocks.npy")
-neg = np.load("col_neg_blocks.npy")
+# 1st image.
+pos = np.load("img1_pos_blocks.npy")
+neg = np.load("img1_neg_blocks.npy")
 
 depths = [1, 3, 5, 7]
-# Loop of depths.
 for d in depths:
     prepare_images(pos, f"data/pos_d{d}", "pos")
-    prepare_images(pos, f"data/neg_d{d}", "neg")
+    prepare_images(neg, f"data/neg_d{d}", "neg")
+
+
+# 2nd image.
+pos = np.load("img2_pos_blocks.npy")
+neg = np.load("img2_neg_blocks.npy")
+
+for d in depths:
+    prepare_images(pos, f"data/pos_d{d}", "pos", 15)
+    prepare_images(neg, f"data/neg_d{d}", "neg", 44)
+
+
+# 3rd image.
+pos = np.load("img3_pos_blocks.npy")
+neg = np.load("img3_neg_blocks.npy")
+
+for d in depths:
+    prepare_images(pos, f"data/pos_d{d}", "pos", 30)
+    prepare_images(neg, f"data/neg_d{d}", "neg", 89)
